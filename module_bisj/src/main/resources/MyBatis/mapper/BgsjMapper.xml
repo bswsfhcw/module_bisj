@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="Bgsj">
+    <select id="queryBgList" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT * FROM bisj_bg where 1=1
+        <if test='id_bg !=null and id_bg !="" '>
+            and id = #{id_bg}
+        </if>
+        <if test='mc !=null and mc !="" '>
+            and mc like  concat('%', #{mc}, '%')
+        </if>
+    </select>
+    <!-- 获取所有表头列-->
+    <select id="getAllBtl" resultType="java.util.HashMap" parameterType="java.util.Map">
+		SELECT a.*,a.cltitle text, a.id_sjcl parent from bisj_btl a  where id_bg= #{id_bg} ORDER BY zt desc, btjb asc,sx asc
+	</select>
+    <!-- 根据表头列ID获取相应的表头列-->
+    <select id="getBtlById" resultType="java.util.Map" parameterType="java.util.Map">
+		SELECT a.*,a.cltitle text from bisj_btl a  where id=  #{id_btl}
+	</select>
+    <!-- 保存表头列-->
+    <insert id="insertBtl" parameterType="java.util.Map">
+        <selectKey keyProperty="id_btl" order="AFTER" resultType="java.lang.Integer">
+            select LAST_INSERT_ID()
+        </selectKey>
+        insert into bisj_btl(id_bg, cltitle, clfield, btjb, sx, sjylx, sjy, gshlx, gs, id_sjcl, rowspan, zt,dbgshlx,dbgs,hb,mrz )
+        values(#{id_bg},#{cltitle},#{clfield},#{btjb},#{sx},#{sjylx},#{sjy},#{gshlx},#{gs},#{id_sjcl},#{rowspan},#{zt},#{dbgshlx},#{dbgs},#{hb},#{mrz})
+    </insert>
+    <!-- 根据id更新表头列-->
+    <update id="updateBtlById" parameterType="java.util.Map">
+		update bisj_btl
+        set
+         cltitle=#{cltitle}, clfield=#{clfield},btjb=#{btjb}, sx=#{sx},
+          sjylx=#{sjylx}, sjy=#{sjy},gshlx=#{gshlx}, gs=#{gs},
+          rowspan=#{rowspan},zt=#{zt},dbgshlx=#{dbgshlx},dbgs=#{dbgs},hb=#{hb},mrz=#{mrz}
+        where id = #{id_btl}
+	</update>
+    <select id="btlSequence" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select if(ISNULL(max(a.sx)),1,max(a.sx)+1) sx from bisj_btl a where a.id_bg=#{id_bg} and a.btjb=#{btjb}
+        <!-- where jlzt = '1' -->
+    </select>
+    <select id="btlSx" resultType="java.lang.Integer" parameterType="java.util.Map">
+        SELECT count(1) btlc from bisj_btl a  where sx=#{sx} and id_bg=#{id_bg} and id_sjcl=#{id_sjcl} and id != #{id_btl}
+    </select>
+    <update id="updateBtlSx" parameterType="java.util.Map">
+        update  bisj_btl set sx=sx+1  where sx=#{sx} and id_bg=#{id_bg} and id_sjcl=#{id_sjcl} and id != #{id_btl}
+    </update>
+    <delete  id="delBtl" parameterType="java.util.Map">
+        delete from   bisj_btl where id=#{id_btl};
+        DELETE from bisj_btl where id in (
+        SELECT t.id  from (
+        SELECT a.id from bisj_btl a where  a.btjb !=1 and not EXISTS (
+        SELECT 1 from bisj_btl b where a.id_sjcl=b.id
+        ))t)
+        and id_bg=#{id_bg};
+        DELETE from bisj_btl where id in (
+        SELECT t.id  from (
+        SELECT a.id from bisj_btl a where  a.btjb !=1 and not EXISTS (
+        SELECT 1 from bisj_btl b where a.id_sjcl=b.id
+        ))t)
+        and id_bg=#{id_bg};
+    </delete>
+    <!--查询控件-->
+    <select id="getBsjBg" parameterType="java.util.Map" resultType="java.util.Map">
+      SELECT * from bisj_bsj where id_bg=#{id_bg} ORDER BY zt asc ,sx asc
+    </select>
+    <select id="bsjSequence" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select if(ISNULL(max(a.sx)),1,max(a.sx)+1) sx from bisj_bsj a where a.id_bg=#{id_bg}
+        <!-- where jlzt = '1' -->
+    </select>
+    <select id="getBsjByid" parameterType="java.util.Map" resultType="java.util.Map">
+      SELECT * from bisj_bsj where id=#{id_bsj}
+    </select>
+    <insert id="insertBsj" parameterType="java.util.Map">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            select LAST_INSERT_ID()
+        </selectKey>
+        insert into bisj_bsj(id_bg, mc, sjlx, sjy, zt, sx, clfield)
+        values(#{id_bg},#{mc},#{sjlx},#{sjy},#{zt},#{sx},#{clfield})
+    </insert>
+    <update id="updateBsj" parameterType="java.util.Map">
+        update bisj_bsj
+        set
+        mc=#{mc}, sjlx=#{sjlx}, sjy=#{sjy},
+          zt=#{zt}, sx=#{sx}, clfield=#{clfield}
+        where id = #{id_bsj}
+    </update>
+    <update id="updateBsjZt" parameterType="java.util.Map">
+        update bisj_bsj
+        set zt=#{zt}
+        where id = #{id_bsj}
+    </update>
+    <delete  id="delBsj" parameterType="java.util.Map">
+        delete from   bisj_bsj where id=#{id_bsj}
+    </delete>
+</mapper>

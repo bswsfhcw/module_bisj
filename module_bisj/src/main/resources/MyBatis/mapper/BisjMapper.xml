@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="Bisj" >
+    <select id="baseData" resultType="java.lang.Integer" parameterType="java.util.Map">
+       select count(1)  c from information_schema.TABLES
+        where TABLE_NAME = #{tableName} and TABLE_ROWS > 1
+    </select>
+    <select id="getYm" parameterType="java.util.Map" resultType="java.util.Map">
+       SELECT * FROM bisj_ym where 1=1
+       <if test='mc !=null and mc !="" '>0
+           and mc like concat('%', #{mc}, '%')
+       </if>
+        <if test='lx !=null and lx !="" '>
+            and lx = #{lx}
+        </if>
+        order by lx asc
+    </select>
+    <select id="getYmByid" parameterType="java.util.Map" resultType="java.util.Map">
+      SELECT * from bisj_ym where id=#{id_ym}
+    </select>
+    <insert id="insertYm" parameterType="java.util.Map">
+        <selectKey keyProperty="id_ym_new" order="AFTER" resultType="java.lang.Integer">
+            select LAST_INSERT_ID()
+        </selectKey>
+        insert into bisj_ym( mc, lx)
+        values(#{mc},#{lx})
+    </insert>
+    <insert id="copyCkj" parameterType="java.util.Map">
+        insert into bisj_cxkj(id_ym,code,csz,mc,lx,gs,html,sjy,zt,sx,iflabel)
+         select #{id_ym_new} ,code,csz,mc,lx,gs,html,sjy,zt,sx,iflabel from bisj_cxkj where id_ym=#{id_ym_mb}
+    </insert>
+    <update id="updateYm" parameterType="java.util.Map">
+        update bisj_ym
+        set mc=#{mc}, lx=#{lx}
+        where id = #{id_ym}
+    </update>
+    <update id="updateBg" parameterType="java.util.Map">
+        update bisj_bg
+        set mc=#{mc}, zt=#{zt}, showFooter=#{showFooter}, pagination=#{pagination}, pageSizeMax=#{pageSizeMax}, dblx=#{dblx}, sx=#{sx}, dbglzd=#{dbglzd}, dbglnr=#{dbglnr},height=#{height}
+        where id = #{id_bg}
+    </update>
+    <update id="updateBgZt" parameterType="java.util.Map">
+        update bisj_bg
+        set zt=#{zt}#{
+        where id = #{id_bg}
+    </update>
+    <delete  id="delBg" parameterType="java.util.Map">
+        DELETE bsj from bisj_bsj bsj where bsj.id_bg = #{id_bg};
+        DELETE btl from bisj_btl btl where btl.id_bg = #{id_bg};
+        DELETE bg  from bisj_bg bg where bg.id=#{id_bg};
+    </delete>
+    <delete  id="delYm" parameterType="java.util.Map">
+        DELETE bsj from bisj_bsj bsj, bisj_bg bg ,bisj_ym ym where bsj.id_bg = bg.id and  bg.id_ym = ym.id and ym.id =  #{id_ym};
+        DELETE btl from bisj_btl btl, bisj_bg bg ,bisj_ym ym where btl.id_bg = bg.id and  bg.id_ym = ym.id and ym.id =  #{id_ym};
+        DELETE kj from bisj_cxkj kj ,bisj_ym ym where kj.id_ym = ym.id and ym.id =  #{id_ym};
+        DELETE bg from bisj_bg bg ,bisj_ym ym where bg.id_ym = ym.id and ym.id = #{id_ym};
+        DELETE from   bisj_ym where id=#{id_ym};
+    </delete>
+    <select id="getBgByid" parameterType="java.util.Map" resultType="java.util.Map">
+      SELECT * from bisj_bg where id=#{id_bg}
+    </select>
+    <insert id="copyBg" parameterType="java.util.Map">
+        <selectKey keyProperty="id_bg_new" order="AFTER" resultType="java.lang.Integer">
+            select LAST_INSERT_ID()
+        </selectKey>
+        insert into bisj_bg( id_ym, mc,zt,showFooter,pagination,pageSizeMax,dblx,dbglzd,dbglnr,height)
+        select #{id_ym_new} ,mc,zt,showFooter,pagination,pageSizeMax,dblx,dbglzd,dbglnr,height from bisj_bg where id=#{id_bg_mb}
+    </insert>
+    <insert id="copyBtl" parameterType="java.util.Map">
+        <selectKey keyProperty="id_btl_new" order="AFTER" resultType="java.lang.Integer">
+            select LAST_INSERT_ID()
+        </selectKey>
+        insert into bisj_btl( id_bg, cltitle,clfield,btjb,sx,sjylx,sjy,id_sjcl,rowspan,zt,gshlx,gs,dbgshlx,dbgs,hb,mrz)
+        select #{id_bg_new}, cltitle,clfield,btjb,sx,sjylx,sjy,#{id_btl_sj_new},rowspan,zt,gshlx,gs,dbgshlx,dbgs,hb,mrz from bisj_btl where id=#{id_btl_mb}
+    </insert>
+    <insert id="copyBsj" parameterType="java.util.Map">
+        insert into bisj_bsj( mc, id_bg,sjy,sjlx,clfield,zt,sx)
+        select mc, #{id_bg_new},sjy,sjlx,clfield,zt,sx from bisj_bsj where id_bg=#{id_bg_mb}
+    </insert>
+    <select id="getBgYm" parameterType="java.util.Map" resultType="java.util.Map">
+      SELECT * FROM bisj_bg where id_ym=#{id_ym} ORDER BY zt desc ,sx asc
+    </select>
+    <select id="getBgYmmb" parameterType="java.util.Map" resultType="java.util.Map">
+      SELECT * FROM bisj_bg where id_ym=#{id_ym_mb}
+    </select>
+    <!--获取表格列-->
+    <select id="hqBtlBgmb" parameterType="java.util.Map" resultType="java.util.LinkedHashMap">
+      SELECT * from  bisj_btl   where id_bg = #{id_bg_mb} ORDER BY btjb asc,sx asc,id_sjcl asc
+    </select>
+    <!--查询控件-->
+    <select id="getCxkjYm" parameterType="java.util.Map" resultType="java.util.Map">
+      SELECT * from bisj_cxkj where id_ym=#{id_ym} ORDER BY zt desc ,sx asc
+    </select>
+    <select id="cxkjSequence" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select if(ISNULL(max(a.sx)),1,max(a.sx)+1) sx from bisj_cxkj a where a.id_ym=#{id_ym}
+        <!-- where jlzt = '1' -->
+    </select>
+    <select id="getCxkjByid" parameterType="java.util.Map" resultType="java.util.Map">
+      SELECT * from bisj_cxkj where id=#{id_cxkj}
+    </select>
+    <insert id="insertCxkj" parameterType="java.util.Map">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            select LAST_INSERT_ID()
+        </selectKey>
+        insert into bisj_cxkj(id_ym, code, csz, mc, lx, gs, html, sjy, zt, sx, iflabel)
+        values(#{id_ym},#{code},#{csz},#{mc},#{lx},#{gs},#{html},#{sjy},#{zt},#{sx},#{iflabel})
+    </insert>
+    <update id="updateCxkj" parameterType="java.util.Map">
+        update bisj_cxkj
+        set
+        code=#{code}, csz=#{csz}, mc=#{mc}, lx=#{lx}, gs=#{gs},
+          zt=#{zt}, sx=#{sx}, iflabel=#{iflabel},
+          sjy=#{sjy},html=#{html}
+        where id = #{id_cxkj}
+    </update>
+    <update id="updateCxkjZt" parameterType="java.util.Map">
+        update bisj_cxkj
+        set zt=#{zt}
+        where id = #{id_cxkj}
+    </update>
+    <delete  id="delCxkj" parameterType="java.util.Map">
+        delete from   bisj_cxkj where id=#{id_cxkj}
+    </delete>
+    <select id="cxkjSx" resultType="java.lang.Integer" parameterType="java.util.Map">
+        SELECT count(1) cxkjc from bisj_cxkj a  where sx=#{sx} and id_ym=#{id_ym}  and id != #{id_cxkj}
+    </select>
+    <update id="updateCxkjSx" parameterType="java.util.Map">
+        update  bisj_cxkj set sx=sx+1  where sx=#{sx} and id_ym=#{id_ym} and id != #{id_cxkj}
+    </update>
+</mapper>
