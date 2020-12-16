@@ -17,6 +17,7 @@
                 <input readonly hidden id="mc_ym" value="${ite['mc']}">
             </c:if>
             <div class="col-lg-2 col-xs-2" style="margin-top: 5px;margin-bottom: 5px;"
+                 
                  id="contentdiv_${status.index+1}">
                 <div  name="ym"  id="ym_${ite['id']}" style="height: 50px;width:95%; border: 1px solid lightgrey;
                      display: flex; flex-direction:column;justify-content:space-around;align-items: center;"
