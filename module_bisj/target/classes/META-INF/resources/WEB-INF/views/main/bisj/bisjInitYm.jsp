@@ -44,9 +44,9 @@
             <div class="box win-search-box">
                 <div class="box-header">
                     <i class="fa box-search"></i>
-                    <div class="box-title">查询条件</div>
-                    <div class="box-tools" style="position: absolute;left: 150px">
-                        <input type="text" class="form-control input-sm"  style="width: 150px" name="mc" id="mc" value="${mc}" placeholder="页面名称搜索" onchange="getYm()"/>
+                    <div class="box-title"></div>
+                    <div class="box-tools" style="position: absolute;left: 10px">
+                        <input type="text" class="form-control input-sm"  style="width: 200px" name="mc" id="mc" value="${mc}" placeholder="页面名称搜索" onchange="getYm()"/>
                     </div>
                     <div class="box-tools">
                         <button   class="btn btn-default btn-sm" onclick="ymSelect('','','add','')" style="margin-left:5px ">初始化新页面</button>
@@ -72,7 +72,7 @@
             <div class="box win-search-box">
                 <div class="box-header">
                     <i class="fa box-search"></i>
-                    <div class="box-title">查询控件</div>
+                    <div class="box-title">控件</div>
                     <div class="box-tools">
                         <button type="button" class="btn btn-default btn-sm" onclick="cxkjSelect('','add',1)">新增</button>
                     </div>

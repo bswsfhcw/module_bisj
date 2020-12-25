@@ -1,26 +1,22 @@
 package com.winning.bisj.service;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import com.winning.common.core.dao.ibatis.BaseDaoAware;
-import com.winning.common.entitys.BaseSelectBean;
-import com.winning.common.entitys.sys.Dazb;
-import com.winning.common.service.CommonService;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.servlet.ServletContext;
 import java.sql.Connection;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /***
  * @Description:
@@ -41,24 +37,62 @@ public class DataService {
     @Resource
     private JdbcTemplate jdbcTemplate;
 
+    @Value("${db.url}")
+    private String dbUrl;
+
+    @Value("#{upload_pros[bisjCshMs]}")
+    private String bisjCshMs;
+
     @PostConstruct
-    public void init() throws Exception {
-        log.info("=====================初始化报表数据库开始========================");
+    public void init() {
+        log.info("=====================DataService开始========================");
         try {
-            Map<String,Object> map = new HashMap<>();
-            map.put("tableName","bisj_ym");
-            int c = (Integer) baseDao.queryForObj("Bisj.baseData",map);
-            log.info("=====================报表数据库已经存在?"+(c==0)+"========================");
-            if(c==0){
-                Connection conn= jdbcTemplate.getDataSource().getConnection();
-                ScriptRunner runner = new ScriptRunner(conn);
-                runner.runScript(Resources.getResourceAsReader("bisj_bg.sql"));
+            log.info("=====================bisjCshMs:"+bisjCshMs+"========================");
+            //根据库中该表bisj_ym是否有数据,没有则自动初始化相关表和数据
+            if("1".equalsIgnoreCase(bisjCshMs)){
+                Map<String,Object> map = new HashMap<>();
+                map.put("tableName","bisj_ym");
+                String regex = "\\{(.*?)}";
+                regex = "jdbc:mysql:\\/\\/(.*?)\\/(.*?)\\?";
+                Pattern pattern = Pattern.compile(regex);
+                Matcher matcher = pattern.matcher(dbUrl);
+                while (matcher.find()) {
+                    map.put("tableSchema",matcher.group(2));
+                    break;
+                }
+                int c = (Integer) baseDao.queryForObj("Bisj.baseData",map);
+                log.info("=====================报表数据库已经存在?"+(c>0)+"========================");
+                if(c==0){
+                    bisjCsh();
+                }
+            //强制初始化
+            }else if("2".equalsIgnoreCase(bisjCshMs)) {
+                bisjCsh();
             }
+            //默认不初始化
         }catch (Exception e){
-            log.error("=====================初始化报表数据库异常========================"+e);
+            log.error("=====================DataService异常========================"+e);
         }finally {
-            log.info("=====================初始化报表数据库结束========================");
+            log.info("=====================DataService结束========================");
         }
     }
-
+    void bisjCsh() throws Exception{
+        log.info("=====================初始化报表数据库开始========================");
+        Connection conn= jdbcTemplate.getDataSource().getConnection();
+        ScriptRunner runner = new ScriptRunner(conn);
+        runner.runScript(Resources.getResourceAsReader("bisj_bg.sql"));
+        log.info("=====================初始化报表数据库结束========================");
+        return;
+    }
+    public  static  void main(String[] args){
+        String dbUrl="jdbc:mysql://172.16.0.101:3306/tljx_ys?useUnicode=true&characterEncod";
+        Set<String> set=new HashSet<>();
+        String regex = "\\{(.*?)}";
+        regex = "jdbc:mysql:\\/\\/(.*?)\\/(.*?)\\?";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(dbUrl);
+        while (matcher.find()) {
+            set.add(matcher.group(2));
+        }
+    }
 }

@@ -71,6 +71,7 @@
 
 <script type="text/javascript">
     $(function () {
+        loadSylData(true);
     });
     var reqPara={};
     var yljgTable;

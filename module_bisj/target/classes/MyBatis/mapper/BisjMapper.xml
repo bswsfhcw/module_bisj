@@ -3,7 +3,10 @@
 <mapper namespace="Bisj" >
     <select id="baseData" resultType="java.lang.Integer" parameterType="java.util.Map">
        select count(1)  c from information_schema.TABLES
-        where TABLE_NAME = #{tableName} and TABLE_ROWS > 1
+        where  TABLE_NAME = #{tableName} and TABLE_ROWS > 1
+        <if test='tableSchema !=null and tableSchema !=""'>
+            and TABLE_SCHEMA=#{tableSchema}
+        </if>
     </select>
     <select id="getYm" parameterType="java.util.Map" resultType="java.util.Map">
        SELECT * FROM bisj_ym where 1=1

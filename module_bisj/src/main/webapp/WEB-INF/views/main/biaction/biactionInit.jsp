@@ -330,6 +330,7 @@
                                     +value +"&nbsp;&nbsp;<i class=\"fa fa-hand-o-down\"></i></a>";
                             }else {
                                 return value;//普通默认
+                                // return "<div style='width:150px'>"+value+"</div> " ;
                             }
                         },
                         footerFormatter:function (data) {
@@ -410,7 +411,7 @@
     function initTable(table) {
         var tableid = table.id;
         var height = table.height;
-        if(isNull(height)){
+        if(isNull(height) || height==0){
             height=300;
         }
         var showFooter = table.showFooter==1?true:false;
