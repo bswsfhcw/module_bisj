@@ -39,7 +39,8 @@
     </update>
     <update id="updateBg" parameterType="java.util.Map">
         update bisj_bg
-        set mc=#{mc}, zt=#{zt}, showFooter=#{showFooter}, pagination=#{pagination}, pageSizeMax=#{pageSizeMax}, dblx=#{dblx}, sx=#{sx}, dbglzd=#{dbglzd}, dbglnr=#{dbglnr},height=#{height}
+        set mc=#{mc}, zt=#{zt}, showFooter=#{showFooter}, pagination=#{pagination}, pageSizeMax=#{pageSizeMax},
+         dblx=#{dblx}, sx=#{sx}, dbglzd=#{dbglzd}, dbglnr=#{dbglnr},height=#{height},bjkdbl=#{bjkdbl}
         where id = #{id_bg}
     </update>
     <update id="updateBgZt" parameterType="java.util.Map">
@@ -66,8 +67,8 @@
         <selectKey keyProperty="id_bg_new" order="AFTER" resultType="java.lang.Integer">
             select LAST_INSERT_ID()
         </selectKey>
-        insert into bisj_bg( id_ym, mc,zt,showFooter,pagination,pageSizeMax,dblx,dbglzd,dbglnr,height)
-        select #{id_ym_new} ,mc,zt,showFooter,pagination,pageSizeMax,dblx,dbglzd,dbglnr,height from bisj_bg where id=#{id_bg_mb}
+        insert into bisj_bg( id_ym, mc,zt,showFooter,pagination,pageSizeMax,dblx,dbglzd,dbglnr,height,bjkdbl)
+        select #{id_ym_new} ,mc,zt,showFooter,pagination,pageSizeMax,dblx,dbglzd,dbglnr,height,bjkdbl from bisj_bg where id=#{id_bg_mb}
     </insert>
     <insert id="copyBtl" parameterType="java.util.Map">
         <selectKey keyProperty="id_btl_new" order="AFTER" resultType="java.lang.Integer">

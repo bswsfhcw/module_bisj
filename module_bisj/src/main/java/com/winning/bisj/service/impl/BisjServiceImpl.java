@@ -36,6 +36,12 @@ public class BisjServiceImpl implements BisjService {
 
     @Resource
     private JdbcTemplate jdbcTemplate;
+
+    @Override
+    public String zc(Map<String, Object> map) {
+        String result="success";
+        return  result;
+    }
     @Override
     public List<Map> getYm(Map<String, Object> map) {
         List<Map> bsjs = null;

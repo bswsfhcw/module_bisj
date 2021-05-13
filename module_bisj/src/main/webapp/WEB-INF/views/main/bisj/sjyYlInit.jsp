@@ -52,7 +52,7 @@
                         <i class="fa box-search"></i>
                         <div class="box-title" style="font-size:15px;">结果</div>
                         <div class="box-tools">
-                            <button   class="btn btn-default btn-sm" onclick="yzSy()" style="margin-left:5px ">校验</button>
+                            <button   class="btn btn-default btn-sm" onclick="yzSyYl()" style="margin-left:5px ">校验</button>
                             <button   class="btn btn-default btn-sm" onclick="loadSylData(true)" style="margin-left:5px ">预览</button>
                         </div>
                     </div>
@@ -70,10 +70,10 @@
 <link rel="stylesheet" type="text/css"  href="${basePath}asserts/js/plugins/bootstrap-treeview/bootstrap-treeview.css"/>
 
 <script type="text/javascript">
+    var reqParaYl={};
     $(function () {
         loadSylData(true);
     });
-    var reqPara={};
     var yljgTable;
     var dabhColumns;
     function initsjyYl(resultDatas) {
@@ -92,18 +92,18 @@
     function loadSylData (initTableFlag) {
         console.log("loadSylData:"+initTableFlag);
         $("input[name='csList1']").each(function(){
-            reqPara[$(this).attr("id")]=$(this).val();
+            reqParaYl[$(this).attr("id")]=$(this).val();
         });
         $("input[name='csList2']").each(function(){
-            reqPara[$(this).attr("id")]=$(this).val();
+            reqParaYl[$(this).attr("id")]=$(this).val();
         });
-        reqPara.sjy=$('#_sjy_yl').val();
+        reqParaYl.sjy=$('#_sjy_yl').val();
         loadMessage();
         $.ajax({
             url: '../bisj/sjyYl',
             type: 'POST',
             dataType: 'json',
-            data: reqPara
+            data: reqParaYl
         }).done(function (resultDatas) {
             hideMessage();
             if(resultDatas && resultDatas.result != 'success'){
@@ -133,21 +133,21 @@
         }).always(function () {
         });
     };
-    function yzSy () {
-        console.log("yzSy:");
+    function yzSyYl () {
+        console.log("yzSyYl:");
         $("input[name='csList1']").each(function(){
-            reqPara[$(this).attr("id")]=$(this).val();
+            reqParaYl[$(this).attr("id")]=$(this).val();
         });
         $("input[name='csList2']").each(function(){
-            reqPara[$(this).attr("id")]=$(this).val();
+            reqParaYl[$(this).attr("id")]=$(this).val();
         });
-        reqPara.sjy=$('#_sjy_yl').val();
+        reqParaYl.sjy=$('#_sjy_yl').val();
         loadMessage();
         $.ajax({
             url: '../bisj/sjyYz',
             type: 'POST',
             dataType: 'json',
-            data: reqPara
+            data: reqParaYl
         }).done(function (resultDatas) {
             hideMessage();
             if(resultDatas && resultDatas.result == 'success'){

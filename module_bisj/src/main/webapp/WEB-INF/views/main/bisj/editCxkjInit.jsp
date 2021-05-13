@@ -169,6 +169,7 @@
     var reqPara={};
     function yzSy () {
         console.log("yzSy:");
+        debugger;
         reqPara.sjy=$('#_sjy').val();
         loadMessage();
         $.ajax({

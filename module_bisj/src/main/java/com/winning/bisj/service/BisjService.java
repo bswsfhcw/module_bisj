@@ -11,6 +11,7 @@ import java.util.Map;
  * @Date: 2020/9/16
  */
 public interface BisjService {
+    String zc(Map<String, Object> map) throws Exception;
     List<Map> getYm(Map<String, Object> map);
     List<Map> getBgYm(Map<String, Object> map);
     void editYmInit(Map<String, Object> map);

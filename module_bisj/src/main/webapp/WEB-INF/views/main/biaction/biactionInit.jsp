@@ -41,6 +41,9 @@
             </div>
         </div>
     </div>
+    <div class="row" id="tables_bi">
+
+    </div>
 </div>
 <script type="text/javascript">
     var UrlParams={};//因为升级页面跳转，这里获取所有参数
@@ -75,8 +78,7 @@
                 if(jsonObject.length > 0){
                     tables=jsonObject;
                     $.each(jsonObject,function(index,value){
-                        var html_table="<div class=\"row tableNew\">\n" +
-                            "        <div class=\"col-md-12 both-pd7\">\n" +
+                        var html_table="<div class=\"col-md-"+value.bjkdbl+" both-pd7 tableNew\">\n" +
                             "            <div class=\"tab-pane fade in active\">\n" +
                             "                <div class=\"box win-box\">\n" +
                             "                    <div class=\"box-header\">\n" +
@@ -88,9 +90,8 @@
                             "                    </div>\n" +
                             "                </div>\n" +
                             "            </div>\n" +
-                            "        </div>\n" +
                             "    </div>";
-                        $("#body_bi").append(html_table);
+                        $("#tables_bi").append(html_table);
                     });
                 }
             },
@@ -412,7 +413,7 @@
         var tableid = table.id;
         var height = table.height;
         if(isNull(height) || height==0){
-            height=300;
+            height=450;
         }
         var showFooter = table.showFooter==1?true:false;
         var pagination = table.pagination==1?true:false;

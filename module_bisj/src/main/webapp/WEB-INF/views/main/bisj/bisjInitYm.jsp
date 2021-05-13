@@ -38,78 +38,86 @@
     }
 </style>
 <div class="panel-body">
-    <div class="row">
+    <div class="row" id="row_zcm" style="display: none;">
         <div class="col-md-12 both-pd7">
-            <!--搜索查询区：常为查询-->
-            <div class="box win-search-box">
-                <div class="box-header">
-                    <i class="fa box-search"></i>
-                    <div class="box-title"></div>
-                    <div class="box-tools" style="position: absolute;left: 10px">
-                        <input type="text" class="form-control input-sm"  style="width: 200px" name="mc" id="mc" value="${mc}" placeholder="页面名称搜索" onchange="getYm()"/>
-                    </div>
-                    <div class="box-tools">
-                        <button   class="btn btn-default btn-sm" onclick="ymSelect('','','add','')" style="margin-left:5px ">初始化新页面</button>
-                        <button type="button" class="btn btn-default btn-sm" id="getList" onclick="getYm()">查询</button>
+            <input type="text" class="form-control input-sm"  style="height: 200px;text-align: center;font-size: 20px" name="zcm" id="zcm" value="${zcm}" placeholder="注册码"/>
+            <span id="zcxx">${zcxx}</span><button style="margin-left: 20px" onclick="zc()">注册</button>
+        </div>
+    </div>
+    <div id="row_zym">
+        <div class="row">
+            <div class="col-md-12 both-pd7">
+                <!--搜索查询区：常为查询-->
+                <div class="box win-search-box">
+                    <div class="box-header">
+                        <i class="fa box-search"></i>
+                        <div class="box-title"></div>
+                        <div class="box-tools" style="position: absolute;left: 10px">
+                            <input type="text" class="form-control input-sm"  style="width: 200px" name="mc" id="mc" value="${mc}" placeholder="页面名称搜索" onchange="getYm()"/>
+                        </div>
+                        <div class="box-tools">
+                            <button   class="btn btn-default btn-sm" onclick="ymSelect('','','add','')" style="margin-left:5px ">初始化新页面</button>
+                            <button type="button" class="btn btn-default btn-sm" id="getList" onclick="getYm()">查询</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12 both-pd7">
-            <div class="tab-pane fade in active">
-                <div class="box win-box">
-                    <div class="box-body" style="overflow: auto;">
-                        <div id="result_ym" style="overflow-y: auto;overflow-x:hidden;" ></div>
+        <div class="row">
+            <div class="col-md-12 both-pd7">
+                <div class="tab-pane fade in active">
+                    <div class="box win-box">
+                        <div class="box-body" style="overflow: auto;">
+                            <div id="result_ym" style="overflow-y: auto;overflow-x:hidden;" ></div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12 both-pd7">
-            <div class="box win-search-box">
-                <div class="box-header">
-                    <i class="fa box-search"></i>
-                    <div class="box-title">控件</div>
-                    <div class="box-tools">
-                        <button type="button" class="btn btn-default btn-sm" onclick="cxkjSelect('','add',1)">新增</button>
+        <div class="row">
+            <div class="col-md-12 both-pd7">
+                <div class="box win-search-box">
+                    <div class="box-header">
+                        <i class="fa box-search"></i>
+                        <div class="box-title">控件</div>
+                        <div class="box-tools">
+                            <button type="button" class="btn btn-default btn-sm" onclick="cxkjSelect('','add',1)">新增</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12 both-pd7">
-            <div class="tab-pane fade in active">
-                <div class="box win-box">
-                    <div class="box-body" style="overflow: auto;">
-                        <div id="result_cxkj" style="overflow-y: auto;overflow-x:hidden;" ></div>
+        <div class="row">
+            <div class="col-md-12 both-pd7">
+                <div class="tab-pane fade in active">
+                    <div class="box win-box">
+                        <div class="box-body" style="overflow: auto;">
+                            <div id="result_cxkj" style="overflow-y: auto;overflow-x:hidden;" ></div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12 both-pd7">
-            <div class="box win-search-box">
-                <div class="box-header">
-                    <i class="fa box-search"></i>
-                    <div class="box-title">表格</div>
-                    <div class="box-tools">
-                        <button   class="btn btn-default btn-sm" onclick="addBg()" style="margin-left:5px ">初始化新表格</button>
+        <div class="row">
+            <div class="col-md-12 both-pd7">
+                <div class="box win-search-box">
+                    <div class="box-header">
+                        <i class="fa box-search"></i>
+                        <div class="box-title">表格</div>
+                        <div class="box-tools">
+                            <button   class="btn btn-default btn-sm" onclick="addBg()" style="margin-left:5px ">初始化新表格</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12 both-pd7">
-            <div class="tab-pane fade in active">
-                <div class="box win-box">
-                    <div class="box-body" style="overflow: auto;">
-                        <div id="result_bg" style="overflow-y: auto;overflow-x:hidden;" ></div>
+        <div class="row">
+            <div class="col-md-12 both-pd7">
+                <div class="tab-pane fade in active">
+                    <div class="box win-box">
+                        <div class="box-body" style="overflow: auto;">
+                            <div id="result_bg" style="overflow-y: auto;overflow-x:hidden;" ></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -124,6 +132,23 @@
     $(document).ready(function(){
         getYm();
     });
+    function zc() {
+        loadMessage();
+        var request = new HttpRequest("zc", "post", {
+            onRequestSuccess: function (responseText) {
+                hideMessage();
+                if (responseText != "success") {
+                    toastr.warning(responseText);
+                }else{
+                    toastr.success("注册成功！");
+                    $("#row_zcm").css("display","none");
+                    $("#row_zym").css("display","");
+                }
+            }
+        });
+        request.addParameter("zcm",  $("#zcm").val());//
+        request.sendRequest();
+    }
     //获取表格数据配置
     function getYm() {
         $("#result_ym").html("");

@@ -107,6 +107,12 @@
                                     <input class="form-control" id="_height" name="height" onkeyup="value=value.replace(/\D+/g,'')" <c:if test="${type eq 'query'}">disabled</c:if> maxlength="4" type="text" value="${bgInfo.height}"/>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label"><span style="color: red;margin-top:3px;">*</span>布局比例(最大12)：</label>
+                                <div class="col-sm-4">
+                                    <input class="form-control" id="_bjkdbl" name="bjkdbl" onkeyup="value=value.replace(/\D+/g,'')" <c:if test="${type eq 'query'}">disabled</c:if> maxlength="32" type="text" value="${bgInfo.bjkdbl}"/>
+                                </div>
+                            </div>
                         </fieldset>
                     </div>
                 </div>
@@ -158,6 +164,7 @@
         request.addParameter("dbglnr", $("#_dbglnr").val());
         request.addParameter("dblx", $("#_dblx").val());
         request.addParameter("height", $("#_height").val());
+        request.addParameter("bjkdbl", $("#_bjkdbl").val());
         request.sendRequest();
     }
 

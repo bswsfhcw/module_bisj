@@ -29,6 +29,7 @@
                                 <label class="col-sm-2 control-label"><span style="color: red;margin-top:3px;">*</span>类型：</label>
                                 <div class="col-sm-4">
                                     <select id="_sjlx" name="sjlx" class="form-control" editable="false" style="position: relative;">
+                                        <option  value="1"  <c:if test="${bsjInfo.sjlx eq 2}">selected="selected"</c:if> >预处理</option>
                                         <option  value="1"  <c:if test="${bsjInfo.sjlx eq 1}">selected="selected"</c:if> >辅助</option>
                                         <option  value="0"  <c:if test="${bsjInfo.sjlx eq 0}">selected="selected"</c:if> >基准</option>
                                     </select>

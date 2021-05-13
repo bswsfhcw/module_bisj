@@ -112,7 +112,7 @@ public class BiactionServiceImpl implements BiactionService {
             e.printStackTrace();
         }
         int btjbMax = (Integer)map.get("btjbMax");
-        HashMap<String,Integer> mapColspan = new HashMap<>();//记录每个单元格的跨列
+        HashMap<String,Integer> mapColspan = new HashMap<>();//记录每个级别_单元格的跨列
         //要确定跨列,从倒数第二行表头开始统计下级列个数即可
         for (int i = btjbMax; i >0 ; i--) {
             List<Map<String, Object>> bt = rmap.get("btjb_"+i);
@@ -123,10 +123,10 @@ public class BiactionServiceImpl implements BiactionService {
                     int colspan=0;
                     for (int k = 0; k <clsxj.size() ; k++) {//取每个下级的下级个数相加即可
                         Map<String, Object> clxj = clsxj.get(k);
-                        colspan+=mapColspan.get(clxj.get("clfield"))==null?1:mapColspan.get(clxj.get("clfield"));
+                        colspan+=mapColspan.get(clxj.get("btjb")+"_"+clxj.get("clfield"))==null?1:mapColspan.get(clxj.get("btjb")+"_"+clxj.get("clfield"));
                     }
                     cl.put("colspan",colspan);
-                    mapColspan.put((String)cl.get("clfield"),colspan);//记录当前的clsspan，供上级使用
+                    mapColspan.put(cl.get("btjb")+"_"+cl.get("clfield"),colspan);//记录当前的clsspan，供上级使用
                 }
             }
         }
@@ -167,42 +167,42 @@ public class BiactionServiceImpl implements BiactionService {
         }
     }
 
-    private void  dealCls(Map<String, Object> map, HashMap<String, List<Map<String, Object>>> rmap,  Map<String, Object> clsj, List<Map<String, Object>> cls) {
+    private void  dealCls(Map<String, Object> map, HashMap<String, List<Map<String, Object>>> rmap,  Map<String, Object> clSj, List<Map<String, Object>> clsCu) {
         int btjbMax=(Integer)map.get("btjbMax");
         int id_cl;
         int btjb;
         int sjylx;
         String sjy;
         int xjclCount;
-        LinkedList<Map<String, Object>> clsxj = new LinkedList<>();//真实得列数
-        for (int i = 0; i < cls.size(); i++) {
-            Map<String, Object> cl = cls.get(i);
-            btjb = (Integer)cl.get("btjb");
+        LinkedList<Map<String, Object>> clsCuReal = new LinkedList<>();//真实得列数
+        for (int i = 0; i < clsCu.size(); i++) {
+            Map<String, Object> clCu = clsCu.get(i);
+            btjb = (Integer)clCu.get("btjb");
             if(btjb>btjbMax){
                 btjbMax=btjb;
                 map.put("btjbMax",btjbMax);
             }
-            id_cl = (Integer)cl.get("id");
-            sjylx = (Integer)cl.get("sjylx");
-            sjy = (String)cl.get("sjy");
-            if(clsj!=null){
-                for (Map.Entry<String, Object> entry : clsj.entrySet()) {
+            id_cl = (Integer)clCu.get("id");
+            sjylx = (Integer)clCu.get("sjylx");
+            sjy = (String)clCu.get("sjy");
+            if(clSj!=null){
+                for (Map.Entry<String, Object> entry : clSj.entrySet()) {
                     map.put(entry.getKey()+"Sj",entry.getValue());//很重要 把上级列所有键值对拿过来
                 }
             }
-            List<Map<String, Object>> rc = rmap.get("btjb_"+btjb);
-            if(rc == null ){
-                rc=new ArrayList<>();
-                rmap.put("btjb_"+btjb,rc);
+            List<Map<String, Object>> clsSameBtjb = rmap.get("btjb_"+btjb);//按照表头级别分组
+            if(clsSameBtjb == null ){
+                clsSameBtjb=new ArrayList<>();
+                rmap.put("btjb_"+btjb,clsSameBtjb);
             }
             List<Map<String, Object>> xjcl = cmap.get("xjcl_"+id_cl);//是否有下级扩展
             xjclCount =CollectionUtils.isEmpty(xjcl)?0:xjcl.size();
             if(sjylx == 0){//表头直接添加
-                clsxj.add(cl);
+                clsCuReal.add(clCu);
                 //处理下级
-                rc.add(cl);
+                clsSameBtjb.add(clCu);
                 if(xjclCount>0){
-                    dealCls(map, rmap,cl, xjcl);
+                    dealCls(map, rmap,clCu, xjcl);
                 }
             }else if(sjylx == 1){
                 dealSqlStr(sjy,map);
@@ -213,23 +213,23 @@ public class BiactionServiceImpl implements BiactionService {
                     e.printStackTrace();
                 }
                 for (int j = 0; j < list.size(); j++) {///表头添加
-                    Map<String, Object> cl_sql = new HashMap<>();
-                    Map<String, Object> cl_sql_ = list.get(j);
-                    cl_sql.putAll(cl);//相关属性取数据库,动态取得再覆盖
-                    for (Map.Entry<String, Object> entry : cl_sql_.entrySet()) {
-                        cl_sql.put(entry.getKey(),entry.getValue());
+                    Map<String, Object> clCu_sql = new HashMap<>();
+                    Map<String, Object> clCu_sql_ = list.get(j);
+                    clCu_sql.putAll(clCu);//相关属性取数据库,动态取得再覆盖
+                    for (Map.Entry<String, Object> entry : clCu_sql_.entrySet()) {
+                        clCu_sql.put(entry.getKey(),entry.getValue());
                     }
-                    clsxj.add(cl_sql);
-                    rc.add(cl_sql);
+                    clsCuReal.add(clCu_sql);
+                    clsSameBtjb.add(clCu_sql);
                     //处理下级
                     if(xjclCount>0){
-                        dealCls(map, rmap,cl_sql, xjcl);
+                        dealCls(map, rmap,clCu_sql, xjcl);
                     }
                 }
             }
             //记录每列下级扩展的列的个数;
-            if(clsj !=null){
-                clsj.put("clsxj",clsxj);
+            if(clSj !=null){
+                clSj.put("clsxj",clsCuReal);
             }
         }
     }
@@ -251,6 +251,18 @@ public class BiactionServiceImpl implements BiactionService {
         List<String> clfields;
         List<Map<String, Object>> listsjJz = null;
         List<Map<String, Object>> listsj = null;
+        for (int i = 0; i <bsjs.size() ; i++) {//
+            LinkedHashMap<String, Object> bsj = bsjs.get(i);
+            if((Integer)bsj.get("sjlx")==2){
+                sjy=(String)bsj.get("sjy");
+                dealSqlStr(sjy,map);
+                try {
+                    listsjJz = baseDao.queryForList("Biaction.execSql",map);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         for (int i = 0; i <bsjs.size() ; i++) {//暂定一个基准
             LinkedHashMap<String, Object> bsj = bsjs.get(i);
             if((Integer)bsj.get("sjlx")==0){

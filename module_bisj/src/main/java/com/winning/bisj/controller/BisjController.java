@@ -49,8 +49,16 @@ public class BisjController extends AbstractController {
     @SystemLogAfterController(description = "页面初始化",czmk = "报表设计")
     public ModelAndView initYm(@RequestMap MapAdapter mapAdapter, HttpServletRequest request, HttpServletResponse response) throws Exception{
         logger.info("BisjController init");
+        mapAdapter.getMap().put("zcm","2121212");
+        mapAdapter.getMap().put("zcxx","已经过期");
+        mapAdapter.getMap().put("zczt","2");//0 未注册 1 已注册 2 已过期 3机器码不正确 4 其他
         initMap(mapAdapter);
         return new ModelAndView("jsp/bisj/bisjInitYm",mapAdapter.getMap());
+    }
+    @RequestMapping(value = "/zc",method = RequestMethod.POST)
+    @SystemLogAfterController(description = "注册",czmk = "报表设计")
+    public void zc(@RequestMap MapAdapter mapAdapter,  HttpServletRequest request, HttpServletResponse response) throws Exception{
+        MessageStreamResult.msgStreamResult(response, bisjService.zc(mapAdapter.getMap()));
     }
     @RequestMapping(value = "getYm")
     public ModelAndView getYm(@RequestMap(requiredSelectOptions = true) MapAdapter mapAdapter, HttpServletRequest request, HttpServletResponse response)  throws Exception{
